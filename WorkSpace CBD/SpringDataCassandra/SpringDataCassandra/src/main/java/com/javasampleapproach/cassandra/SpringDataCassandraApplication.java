@@ -22,13 +22,15 @@ public class SpringDataCassandraApplication implements CommandLineRunner {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringDataCassandraApplication.class, args);
+		System.exit(0);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
 		clearData();
 		saveData();
-		lookup();
+		lookupLoop();
+		
 	}
 
 	public void clearData() {
@@ -37,7 +39,7 @@ public class SpringDataCassandraApplication implements CommandLineRunner {
 
 	public void saveData() {
 
-		String csvFile = "/Users/josem/Desktop/Libro1.csv";
+		String csvFile = "/Users/Libro1.csv";
 		String line = "";
 		String cvsSplitBy = ",";
 
@@ -72,11 +74,11 @@ public class SpringDataCassandraApplication implements CommandLineRunner {
 
 		Scanner myObj = new Scanner(System.in); // Create a Scanner object
 		System.out.println("Escoja una opción:" + "1. Para ver todo" + "2. Para Consultar por nombre"
-				+ "3. Para consultar por edad");
+				+ "3. Para consultar por edad\n");
 
 		int num = myObj.nextInt(); // Read user input
 		System.out.println(num);
-		myObj.close();
+		
 		if (num == 1) {
 
 			System.out.println("===================Select All===================");
@@ -91,7 +93,7 @@ public class SpringDataCassandraApplication implements CommandLineRunner {
 			System.out.println(fn);
 			List<Customer> peters = customerRepository.findByFirstname(fn);
 			peters.forEach(System.out::println);
-			myFirstName.close();
+			
 		} else if (num == 3) {
 
 			System.out.println("===================Lookup Customers from Cassandra by Age===================");
@@ -103,35 +105,36 @@ public class SpringDataCassandraApplication implements CommandLineRunner {
 	
 	
 	public void lookupLoop() {
+
+		Scanner myObj = new Scanner(System.in); // Create a Scanner object
 		Boolean exit = false;
 		while(exit==false) {
 		
-		Scanner myObj = new Scanner(System.in); // Create a Scanner object
-		System.out.println("Escoja una opción:" + "1. Para ver todo" + "2. Para Consultar por nombre"
-				+ "3. Para consultar por edad");
+		System.out.println("Escoja una opción:\n" + "1. Para ver todo\n" + "2. Para Consultar por nombre\n"
+				+ "3. Para consultar por edad\n"+ "0. Para salir\n");
 
 		String num = myObj.nextLine(); // Read user input
 		System.out.println(num);
-
-		if (num == "1") {
+		
+		if (num.equals("1")) {
 
 			System.out.println("===================Select All===================");
 			List<Customer> all = (List<Customer>) customerRepository.findAll();
 			all.forEach(System.out::println);
-		} else if (num == "2") {
+		} else if (num.equals("2")) {
 
 			System.out.println("===================Lookup Customers from Cassandra by Firstname===================");
-			Scanner myFirstName = new Scanner(System.in); // Create a Scanner object
+			
 			System.out.println("Introduzca un nombre");
-			String fn = myFirstName.nextLine(); // Read user input
+			String fn = myObj.nextLine(); // Read user input
 			System.out.println(fn);
 			List<Customer> peters = customerRepository.findByFirstname(fn);
 			peters.forEach(System.out::println);
-			myFirstName.close();
-		} else if (num == "3") {
-			Scanner sc = new Scanner(System.in); // Create a Scanner object
+			
+		} else if (num.equals("3")) {
+			
 			System.out.println("Introduzca una edad mínima");
-			String age = sc.nextLine(); // Read user input
+			String age = myObj.nextLine(); // Read user input
 			if(checkIsNumber(age)) {
 				
 			
@@ -143,13 +146,16 @@ public class SpringDataCassandraApplication implements CommandLineRunner {
 				
 				System.out.println("Invalid input");
 			}
-			sc.close();
+			
+		}else if(num.equals("0")) {
+			exit=true;
 		}else {
 			System.out.println("Invalid input");
 		}
 		
 		}
 
+		myObj.close();
 	}
 	
 	
