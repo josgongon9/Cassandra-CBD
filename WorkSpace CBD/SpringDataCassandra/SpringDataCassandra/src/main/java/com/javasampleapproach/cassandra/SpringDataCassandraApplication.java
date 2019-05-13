@@ -76,7 +76,7 @@ public class SpringDataCassandraApplication implements CommandLineRunner {
 
 		int num = myObj.nextInt(); // Read user input
 		System.out.println(num);
-
+		myObj.close();
 		if (num == 1) {
 
 			System.out.println("===================Select All===================");
@@ -91,6 +91,7 @@ public class SpringDataCassandraApplication implements CommandLineRunner {
 			System.out.println(fn);
 			List<Customer> peters = customerRepository.findByFirstname(fn);
 			peters.forEach(System.out::println);
+			myFirstName.close();
 		} else if (num == 3) {
 
 			System.out.println("===================Lookup Customers from Cassandra by Age===================");
@@ -99,4 +100,70 @@ public class SpringDataCassandraApplication implements CommandLineRunner {
 		}
 
 	}
+	
+	
+	public void lookupLoop() {
+		Boolean exit = false;
+		while(exit==false) {
+		
+		Scanner myObj = new Scanner(System.in); // Create a Scanner object
+		System.out.println("Escoja una opción:" + "1. Para ver todo" + "2. Para Consultar por nombre"
+				+ "3. Para consultar por edad");
+
+		String num = myObj.nextLine(); // Read user input
+		System.out.println(num);
+
+		if (num == "1") {
+
+			System.out.println("===================Select All===================");
+			List<Customer> all = (List<Customer>) customerRepository.findAll();
+			all.forEach(System.out::println);
+		} else if (num == "2") {
+
+			System.out.println("===================Lookup Customers from Cassandra by Firstname===================");
+			Scanner myFirstName = new Scanner(System.in); // Create a Scanner object
+			System.out.println("Introduzca un nombre");
+			String fn = myFirstName.nextLine(); // Read user input
+			System.out.println(fn);
+			List<Customer> peters = customerRepository.findByFirstname(fn);
+			peters.forEach(System.out::println);
+			myFirstName.close();
+		} else if (num == "3") {
+			Scanner sc = new Scanner(System.in); // Create a Scanner object
+			System.out.println("Introduzca una edad mínima");
+			String age = sc.nextLine(); // Read user input
+			if(checkIsNumber(age)) {
+				
+			
+			System.out.println("===================Lookup Customers from Cassandra by Age===================");
+			int ageInt = Integer.parseInt(age);
+			List<Customer> custsAgeGreaterThan = customerRepository.findCustomerHasAgeGreaterThan(ageInt);
+			custsAgeGreaterThan.forEach(System.out::println);
+			}else {
+				
+				System.out.println("Invalid input");
+			}
+			sc.close();
+		}else {
+			System.out.println("Invalid input");
+		}
+		
+		}
+
+	}
+	
+	
+	public static Boolean checkIsNumber(String arg) {
+
+       
+        boolean numeric = true;
+
+        try {
+            Double num = Double.parseDouble(arg);
+        } catch (NumberFormatException e) {
+            numeric = false;
+        }
+
+       return numeric;
+    }
 }
