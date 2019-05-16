@@ -57,9 +57,9 @@ public class SpringDataCassandraApplication implements CommandLineRunner {
 				act.setYear(Integer.parseInt(actor[1].substring(1)));
 				act.setAge(Integer.parseInt(actor[2].substring(1)));
 				String name = actor[3].replace("\"", "");
-				act.setFullname(name);
+				act.setFullname(name.substring(1));
 				String movieName = actor[4].replace("\"", "");
-				act.setMovie(movieName);
+				act.setMovie(movieName.substring(1));
 
 				System.out.println(act);
 				actorRepository.save(act);
@@ -101,27 +101,80 @@ public class SpringDataCassandraApplication implements CommandLineRunner {
 			System.out.println(fn);
 			List<Actor> peters = actorRepository.findByName(fn);
 			peters.forEach(System.out::println);
+			if(peters.isEmpty()) {
+				System.out.println("Sin resultados. Tienes que escribir el nombre y apellido para encontrar"
+						+ "a un actor");
+			}
 			
 		} else if (num.equals("3")) {
 			
-			System.out.println("Introduzca una edad mínima");
+			System.out.println("===================Búsqueda por edad===================");
+			System.out.println("Introduzca una edad máxima");
 			String age = myObj.nextLine(); // Read user input
 			if(checkIsNumber(age)) {
 				
 			
-			System.out.println("===================Lookup Customers from Cassandra by Age===================");
+			
 			int ageInt = Integer.parseInt(age);
-			List<Actor> custsAgeGreaterThan = actorRepository.findCustomerHasAgeGreaterThan(ageInt);
+			List<Actor> custsAgeGreaterThan = actorRepository.findActorHasAgeLessThan(ageInt);
 			custsAgeGreaterThan.forEach(System.out::println);
 			}else {
 				
-				System.out.println("Invalid input");
+				System.out.println("Introduzca un número");
+			}
+			
+		} else if (num.equals("4")) {
+			
+			System.out.println("===================Búsqueda por año===================");
+			System.out.println("Introduzca un año máximo");
+			String year = myObj.nextLine(); // Read user input
+			if(checkIsNumber(year)) {
+				
+			
+			
+			int yearInt = Integer.parseInt(year);
+			List<Actor> custsAgeGreaterThan = actorRepository.findActorYearLessThan(yearInt);
+			custsAgeGreaterThan.forEach(System.out::println);
+			}else {
+				
+				System.out.println("Introduzca un número");
+			}
+			
+		}else if (num.equals("5")) {
+			
+			System.out.println("===================Búsqueda por año===================");
+			System.out.println("Introduzca un año mínimo");
+			String year = myObj.nextLine(); // Read user input
+			if(checkIsNumber(year)) {
+				
+			
+			
+			int yearInt = Integer.parseInt(year);
+			List<Actor> custsAgeGreaterThan = actorRepository.findActorYearGreaterThan(yearInt);
+			custsAgeGreaterThan.forEach(System.out::println);
+			}else {
+				
+				System.out.println("Introduzca un número");
+			}
+			
+		}else if (num.equals("6")) {
+
+			System.out.println("===================Búsqueda por película===================");
+			
+			System.out.println("Introduzca un nombre de pélicula");
+			String fn = myObj.nextLine(); // Read user input
+			System.out.println(fn);
+			List<Actor> peters = actorRepository.findByFilm(fn);
+			peters.forEach(System.out::println);
+			if(peters.isEmpty()) {
+				System.out.println("Sin resultados. Tienes que escribir el completo de la película para encontrar"
+						+ "a un actor");
 			}
 			
 		}else if(num.equals("0")) {
 			exit=true;
 		}else {
-			System.out.println("Invalid input");
+			System.out.println("Introduzca un número");
 		}
 		
 		}
