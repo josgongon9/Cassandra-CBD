@@ -11,14 +11,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.javasampleapproach.cassandra.model.Customer;
-import com.javasampleapproach.cassandra.repository.CustomerRepository;
+import com.javasampleapproach.cassandra.model.Actor;
+import com.javasampleapproach.cassandra.repository.ActorRepository;
 
 @SpringBootApplication
 public class SpringDataCassandraApplication implements CommandLineRunner {
 
 	@Autowired
-	CustomerRepository customerRepository;
+	ActorRepository actorRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringDataCassandraApplication.class, args);
@@ -34,34 +34,36 @@ public class SpringDataCassandraApplication implements CommandLineRunner {
 	}
 
 	public void clearData() {
-		customerRepository.deleteAll();
+		actorRepository.deleteAll();
 	}
 
 	public void saveData() {
 
-		String csvFile = "/Users/Libro1.csv";
+		String csvFile = "/Users/CSVOscars.csv";
 		String line = "";
 		String cvsSplitBy = ",";
 
 		try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
-
+			int idCounter =0;
 			while ((line = br.readLine()) != null) {
 
 				// use comma as separator
-				String[] customer = line.split(cvsSplitBy);
+				String[] actor = line.split(cvsSplitBy);
 
-				// System.out.println("Customer [id= " + customer[0] + " , name=" + customer[1]
-				// + " , surname=" + customer[2] + " , age=" + customer[3] + "]");
+				
 
-				Customer cust = new Customer();
-				cust.setId(Integer.valueOf(customer[0]));
-				cust.setFirstname(customer[1]);
-				cust.setLastname(customer[2]);
-				cust.setAge(Integer.valueOf(customer[3]));
+				Actor act = new Actor();
+				act.setId(idCounter);
+				act.setYear(Integer.parseInt(actor[1].substring(1)));
+				act.setAge(Integer.parseInt(actor[2].substring(1)));
+				String name = actor[3].replace("\"", "");
+				act.setFullname(name);
+				String movieName = actor[4].replace("\"", "");
+				act.setMovie(movieName);
 
-				System.out.println(cust);
-				customerRepository.save(cust);
-
+				System.out.println(act);
+				actorRepository.save(act);
+				idCounter++;
 			}
 
 		} catch (IOException e) {
@@ -70,40 +72,7 @@ public class SpringDataCassandraApplication implements CommandLineRunner {
 
 	}
 
-	public void lookup() {
 
-		Scanner myObj = new Scanner(System.in); // Create a Scanner object
-		System.out.println("Escoja una opción:" + "1. Para ver todo" + "2. Para Consultar por nombre"
-				+ "3. Para consultar por edad\n");
-
-		int num = myObj.nextInt(); // Read user input
-		System.out.println(num);
-		
-		if (num == 1) {
-
-			System.out.println("===================Select All===================");
-			List<Customer> all = (List<Customer>) customerRepository.findAll();
-			all.forEach(System.out::println);
-		} else if (num == 2) {
-
-			System.out.println("===================Lookup Customers from Cassandra by Firstname===================");
-			Scanner myFirstName = new Scanner(System.in); // Create a Scanner object
-			System.out.println("Introduzca un nombre");
-			String fn = myFirstName.nextLine(); // Read user input
-			System.out.println(fn);
-			List<Customer> peters = customerRepository.findByFirstname(fn);
-			peters.forEach(System.out::println);
-			
-		} else if (num == 3) {
-
-			System.out.println("===================Lookup Customers from Cassandra by Age===================");
-			List<Customer> custsAgeGreaterThan25 = customerRepository.findCustomerHasAgeGreaterThan(25);
-			custsAgeGreaterThan25.forEach(System.out::println);
-		}
-
-	}
-	
-	
 	public void lookupLoop() {
 
 		Scanner myObj = new Scanner(System.in); // Create a Scanner object
@@ -111,24 +80,26 @@ public class SpringDataCassandraApplication implements CommandLineRunner {
 		while(exit==false) {
 		
 		System.out.println("Escoja una opción:\n" + "1. Para ver todo\n" + "2. Para Consultar por nombre\n"
-				+ "3. Para consultar por edad\n"+ "0. Para salir\n");
+				+ "3. Para consultar por edad máxima\n"+ "4. Para consultar por año máximo\n"+
+				"5. Para consultar por año mínimo\n"+ "6. Para consultar por nombre de la película\n"
+				+ "0. Para salir\n");
 
 		String num = myObj.nextLine(); // Read user input
 		System.out.println(num);
 		
 		if (num.equals("1")) {
 
-			System.out.println("===================Select All===================");
-			List<Customer> all = (List<Customer>) customerRepository.findAll();
+			System.out.println("===================Todos los actores===================");
+			List<Actor> all = (List<Actor>) actorRepository.findAll();
 			all.forEach(System.out::println);
 		} else if (num.equals("2")) {
 
-			System.out.println("===================Lookup Customers from Cassandra by Firstname===================");
+			System.out.println("===================Búsqueda por nombre===================");
 			
 			System.out.println("Introduzca un nombre");
 			String fn = myObj.nextLine(); // Read user input
 			System.out.println(fn);
-			List<Customer> peters = customerRepository.findByFirstname(fn);
+			List<Actor> peters = actorRepository.findByName(fn);
 			peters.forEach(System.out::println);
 			
 		} else if (num.equals("3")) {
@@ -140,7 +111,7 @@ public class SpringDataCassandraApplication implements CommandLineRunner {
 			
 			System.out.println("===================Lookup Customers from Cassandra by Age===================");
 			int ageInt = Integer.parseInt(age);
-			List<Customer> custsAgeGreaterThan = customerRepository.findCustomerHasAgeGreaterThan(ageInt);
+			List<Actor> custsAgeGreaterThan = actorRepository.findCustomerHasAgeGreaterThan(ageInt);
 			custsAgeGreaterThan.forEach(System.out::println);
 			}else {
 				
@@ -165,7 +136,7 @@ public class SpringDataCassandraApplication implements CommandLineRunner {
         boolean numeric = true;
 
         try {
-            Double num = Double.parseDouble(arg);
+            Double.parseDouble(arg);
         } catch (NumberFormatException e) {
             numeric = false;
         }
