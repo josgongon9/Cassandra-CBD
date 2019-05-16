@@ -1,0 +1,11 @@
+create keyspace cbd_keyspace with replication={'class':'SimpleStrategy', 'replication_factor':1};
+
+use cbd_keyspace;
+ 
+CREATE TABLE actor(
+   id int PRIMARY KEY,
+   fullname text,
+   movie text,
+   age int,
+   year int
+);
