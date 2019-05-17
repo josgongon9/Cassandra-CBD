@@ -1,4 +1,4 @@
-package com.javasampleapproach.cassandra;
+package com.cbd.cassandra;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -11,19 +11,21 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.javasampleapproach.cassandra.model.Actor;
-import com.javasampleapproach.cassandra.repository.ActorRepository;
+import com.cbd.cassandra.model.Actor;
+import com.cbd.cassandra.repository.ActorRepository;
 
 @SpringBootApplication
 public class SpringDataCassandraApplication implements CommandLineRunner {
 
-	@Autowired
-	ActorRepository actorRepository;
-
+	
 	public static void main(String[] args) {
 		SpringApplication.run(SpringDataCassandraApplication.class, args);
 		System.exit(0);
 	}
+	
+	@Autowired
+	ActorRepository actorRepository;
+
 
 	@Override
 	public void run(String... args) throws Exception {
